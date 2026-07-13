@@ -59,7 +59,7 @@ export async function createMarket(
   const initialPrice =
     marketType === "binary" ? 0.5 : 1 / outcomeLabels.length;
 
-  const { data: market, error: marketError } = await (supabase
+  const { data: market, error: marketError } = await supabase
     .from("markets")
     .insert({
       creator_id: creatorId,
@@ -113,7 +113,7 @@ export async function createMarket(
       })
       .eq("id", creatorId);
 
-    await (supabase.from("transactions").insert({
+    await supabase.from("transactions").insert({
       user_id: creatorId,
       type: "market_created",
       amount: -10,
@@ -147,7 +147,7 @@ export async function placeBet(
   const shares = amount / price;
   const newBalance = profile.data.points_balance - amount;
 
-  const { error: betError } = await (supabase.from("bets").insert({
+  const { error: betError } = await supabase.from("bets").insert({
     user_id: userId,
     outcome_id: outcomeId,
     market_id: marketId,
@@ -277,7 +277,7 @@ export async function resolveMarket(
             })
             .eq("id", bet.user_id);
 
-          await (supabase.from("transactions").insert({
+await supabase.from("transactions").insert({
             user_id: bet.user_id,
             type: "bet_won",
             amount: payout,
