@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   total_spent NUMERIC NOT NULL DEFAULT 0,
   markets_created INTEGER NOT NULL DEFAULT 0,
   bets_placed INTEGER NOT NULL DEFAULT 0,
+  is_admin BOOLEAN NOT NULL DEFAULT false,
   last_weekly_claim TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -144,3 +145,20 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Admin policy: admins can do everything
+CREATE POLICY "Admins have full access" ON profiles FOR ALL USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+);
+CREATE POLICY "Admins can manage all markets" ON markets FOR ALL USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+);
+CREATE POLICY "Admins can manage all outcomes" ON outcomes FOR ALL USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+);
+CREATE POLICY "Admins can manage all bets" ON bets FOR ALL USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+);
+CREATE POLICY "Admins can view all transactions" ON transactions FOR SELECT USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+);

@@ -43,6 +43,12 @@ export default function RootLayout({
               >
                 Leaderboard
               </a>
+              <a
+                href="/admin"
+                className="text-sm text-poly-muted transition hover:text-poly-highlight"
+              >
+                Admin
+              </a>
             </div>
             <div className="flex items-center gap-3">
               <a

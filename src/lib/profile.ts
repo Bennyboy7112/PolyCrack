@@ -1,4 +1,4 @@
-import { getSupabase } from "./supabase";
+import { getSupabase } from "@/lib/supabase";
 import type { Profile } from "@/types";
 
 export async function getProfile(userId: string): Promise<Profile | null> {
@@ -84,6 +84,83 @@ export async function grantWeeklyPoints(userId: string): Promise<boolean> {
     amount: 100,
     balance_after: newBalance,
     description: "Weekly allowance: 100 points",
+  });
+
+  return true;
+}
+
+export async function isAdmin(userId: string): Promise<boolean> {
+  const profile = await getProfile(userId);
+  return profile?.is_admin === true;
+}
+
+export async function makeAdmin(userId: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ is_admin: true })
+    .eq("id", userId);
+  return !error;
+}
+
+export async function getAllUsers(): Promise<Profile[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function getAllMarkets(): Promise<any[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("markets")
+    .select("*, profiles!creator_id(username)")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching markets:", error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function deleteMarket(marketId: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from("markets").delete().eq("id", marketId);
+  return !error;
+}
+
+export async function adjustPoints(userId: string, amount: number): Promise<boolean> {
+  const supabase = getSupabase();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("points_balance")
+    .eq("id", userId)
+    .single();
+
+  if (!profile) return false;
+
+  const newBalance = profile.points_balance + amount;
+  const { error } = await supabase
+    .from("profiles")
+    .update({ points_balance: newBalance, updated_at: new Date().toISOString() })
+    .eq("id", userId);
+
+  if (error) return false;
+
+  await supabase.from("transactions").insert({
+    user_id: userId,
+    type: amount > 0 ? "weekly_grant" : "bet_placed",
+    amount,
+    balance_after: newBalance,
+    description: amount > 0 ? `Admin added ${amount} points` : `Admin removed ${Math.abs(amount)} points`,
   });
 
   return true;
