@@ -67,11 +67,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const { data: currentProfile } = await supabase
+      .from("profiles")
+      .select("bets_placed")
+      .eq("id", user.id)
+      .single();
+
     await supabase
       .from("profiles")
       .update({
         points_balance: newBalance,
-        bets_placed: supabase.rpc ? undefined : undefined,
+        bets_placed: (currentProfile?.bets_placed || 0) + 1,
         updated_at: new Date().toISOString(),
       })
       .eq("id", user.id);
@@ -240,11 +246,18 @@ export async function PUT(request: NextRequest) {
     }
 
     const newBalance = profile.points_balance - 10;
+
+    const { data: creatorProfile } = await supabase
+      .from("profiles")
+      .select("markets_created")
+      .eq("id", creatorId)
+      .single();
+
     await supabase
       .from("profiles")
       .update({
         points_balance: newBalance,
-        markets_created: supabase.rpc ? undefined : undefined,
+        markets_created: (creatorProfile?.markets_created || 0) + 1,
         updated_at: new Date().toISOString(),
       })
       .eq("id", creatorId);

@@ -164,12 +164,6 @@ export async function placeBet(
     .from("profiles")
     .update({
       points_balance: newBalance,
-      total_spent: supabase.rpc
-        ? profile.data.points_balance
-        : profile.data.points_balance,
-      bets_placed: supabase.rpc
-        ? undefined
-        : undefined,
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);
