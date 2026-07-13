@@ -212,7 +212,7 @@ export async function placeBet(
       .eq("id", marketId);
   }
 
-  await (supabase.from("transactions").insert({
+  await supabase.from("transactions").insert({
     user_id: userId,
     type: "bet_placed",
     amount: -amount,
