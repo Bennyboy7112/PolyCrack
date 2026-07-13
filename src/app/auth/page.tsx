@@ -5,16 +5,21 @@ import { getSupabase } from "@/lib/supabase";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("signup");
-  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  function generateEmail(username: string) {
+    return `${username.toLowerCase().replace(/[^a-z0-9]/g, "")}@polycrack.local`;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+
+    const email = generateEmail(username);
 
     if (mode === "signup") {
       const supabase = getSupabase();
@@ -27,7 +32,8 @@ export default function AuthPage() {
       if (error) {
         setMessage(error.message);
       } else if (data.user) {
-        setMessage("Account created! Check your email to verify.");
+        setMessage("Account created! Redirecting...");
+        setTimeout(() => (window.location.href = "/"), 1000);
       }
     } else {
       const supabase = getSupabase();
@@ -59,28 +65,15 @@ export default function AuthPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="glass space-y-4 rounded-xl p-6">
-        {mode === "signup" && (
-          <div>
-            <label className="mb-1 block text-sm text-poly-muted">Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="w-full rounded-lg border border-poly-border bg-poly-bg px-4 py-2.5 text-white outline-none focus:border-poly-highlight"
-              placeholder="crack_predictor"
-            />
-          </div>
-        )}
         <div>
-          <label className="mb-1 block text-sm text-poly-muted">Email</label>
+          <label className="mb-1 block text-sm text-poly-muted">Username</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
             className="w-full rounded-lg border border-poly-border bg-poly-bg px-4 py-2.5 text-white outline-none focus:border-poly-highlight"
-            placeholder="you@example.com"
+            placeholder="crack_predictor"
           />
         </div>
         <div>
