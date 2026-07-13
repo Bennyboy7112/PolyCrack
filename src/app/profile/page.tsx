@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Profile, Transaction, Bet } from "@/types";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -18,6 +18,7 @@ export default function ProfilePage() {
 
   async function fetchProfile() {
     setLoading(true);
+    const supabase = getSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();

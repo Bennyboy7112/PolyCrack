@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("signup");
@@ -17,6 +17,7 @@ export default function AuthPage() {
     setMessage("");
 
     if (mode === "signup") {
+      const supabase = getSupabase();
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -29,6 +30,7 @@ export default function AuthPage() {
         setMessage("Account created! Check your email to verify.");
       }
     } else {
+      const supabase = getSupabase();
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,

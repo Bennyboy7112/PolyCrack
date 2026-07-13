@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Profile } from "@/types";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 interface LeaderboardEntry extends Profile {
   profit: number;
@@ -19,6 +19,7 @@ export default function LeaderboardPage() {
 
   async function fetchLeaderboard() {
     setLoading(true);
+    const supabase = getSupabase();
     const { data: profiles } = await supabase
       .from("profiles")
       .select("*")

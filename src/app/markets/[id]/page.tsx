@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import type { MarketWithOutcomes, Bet } from "@/types";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export default function MarketDetailPage() {
   const params = useParams();
@@ -21,6 +21,7 @@ export default function MarketDetailPage() {
 
   async function fetchMarket() {
     setLoading(true);
+    const supabase = getSupabase();
     const { data } = await supabase
       .from("markets")
       .select("*, outcomes(*), profiles!creator_id(username)")

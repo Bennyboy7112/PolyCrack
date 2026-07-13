@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { MarketWithOutcomes } from "@/types";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 const CATEGORIES = [
   "all",
@@ -27,6 +27,7 @@ export default function MarketsPage() {
 
   async function fetchMarkets() {
     setLoading(true);
+    const supabase = getSupabase();
     let query = supabase
       .from("markets")
       .select("*, outcomes(*), profiles!creator_id(username)")

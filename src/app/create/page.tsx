@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 const CATEGORIES = [
   "politics",
@@ -48,6 +48,7 @@ export default function CreateMarketPage() {
     setCreating(true);
     setMessage("");
 
+    const supabase = getSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();

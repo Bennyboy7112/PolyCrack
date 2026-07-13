@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 import type { Market, Outcome, MarketWithOutcomes } from "@/types";
 
 export async function getMarkets(
@@ -7,6 +7,7 @@ export async function getMarkets(
   limit = 20,
   offset = 0
 ): Promise<MarketWithOutcomes[]> {
+  const supabase = getSupabase();
   let query = supabase
     .from("markets")
     .select("*, outcomes(*), profiles!creator_id(username, avatar_url)")
@@ -31,6 +32,7 @@ export async function getMarkets(
 export async function getMarketById(
   marketId: string
 ): Promise<MarketWithOutcomes | null> {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("markets")
     .select("*, outcomes(*), profiles!creator_id(username, avatar_url)")
@@ -53,6 +55,7 @@ export async function createMarket(
   outcomeLabels: string[],
   creatorId: string
 ): Promise<Market | null> {
+  const supabase = getSupabase();
   const initialPrice =
     marketType === "binary" ? 0.5 : 1 / outcomeLabels.length;
 
@@ -130,6 +133,7 @@ export async function placeBet(
   amount: number,
   price: number
 ): Promise<boolean> {
+  const supabase = getSupabase();
   const profile = await supabase
     .from("profiles")
     .select("points_balance")
@@ -224,6 +228,7 @@ export async function resolveMarket(
   marketId: string,
   winningOutcomeId: string
 ): Promise<boolean> {
+  const supabase = getSupabase();
   const { error: marketError } = await supabase
     .from("markets")
     .update({

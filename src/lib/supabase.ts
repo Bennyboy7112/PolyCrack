@@ -11,10 +11,3 @@ export function getSupabase() {
   }
   return client;
 }
-
-// For backwards compatibility - lazy proxy
-export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
-  get(_, prop) {
-    return (getSupabase() as Record<string | symbol, unknown>)[prop];
-  },
-});

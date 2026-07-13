@@ -1,7 +1,8 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 import type { Profile } from "@/types";
 
 export async function getProfile(userId: string): Promise<Profile | null> {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("profiles")
     .select("*")
@@ -19,6 +20,7 @@ export async function updateProfile(
   userId: string,
   updates: Partial<Profile>
 ): Promise<Profile | null> {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("profiles")
     .update({ ...updates, updated_at: new Date().toISOString() })
@@ -58,6 +60,7 @@ export async function grantWeeklyPoints(userId: string): Promise<boolean> {
   const canClaim = await checkWeeklyAllowance(userId);
   if (!canClaim) return false;
 
+  const supabase = getSupabase();
   const newBalance = profile.points_balance + 100;
 
   const { error: updateError } = await supabase
