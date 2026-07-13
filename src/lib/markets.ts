@@ -72,7 +72,7 @@ export async function createMarket(
       total_volume: 0,
     })
     .select()
-    .single()) as any;
+    .single() as any;
 
   if (marketError) {
     console.error("Error creating market:", marketError);
