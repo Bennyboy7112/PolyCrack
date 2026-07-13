@@ -26,11 +26,11 @@ export default function LeaderboardPage() {
       .limit(50);
 
     if (profiles) {
-      const enriched = profiles.map((p) => ({
+      const enriched = profiles.map((p: Record<string, unknown>) => ({
         ...p,
-        profit: p.total_earned - 1000,
-        winRate: p.bets_placed > 0 ? 0 : 0,
-      }));
+        profit: (p.total_earned as number) - 1000,
+        winRate: (p.bets_placed as number) > 0 ? 0 : 0,
+      })) as LeaderboardEntry[];
       setEntries(enriched);
     }
     setLoading(false);
