@@ -58,6 +58,7 @@ export default function ProfilePage() {
     setClaiming(true);
     setMessage("");
 
+    const supabase = getSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -82,6 +83,7 @@ export default function ProfilePage() {
   }
 
   async function handleSignOut() {
+    const supabase = getSupabase();
     await supabase.auth.signOut();
     window.location.href = "/";
   }

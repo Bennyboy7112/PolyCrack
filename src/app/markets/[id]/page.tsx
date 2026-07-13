@@ -36,6 +36,7 @@ export default function MarketDetailPage() {
     setPlacing(true);
     setMessage("");
 
+    const supabase = getSupabase();
     const {
       data: { user },
     } = await supabase.auth.getUser();
