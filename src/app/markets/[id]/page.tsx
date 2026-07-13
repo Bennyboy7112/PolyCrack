@@ -211,7 +211,7 @@ export default function MarketDetailPage() {
         <h3 className="mb-3 font-semibold">Market Info</h3>
         <dl className="grid grid-cols-2 gap-2 text-sm">
           <dt className="text-poly-muted">Created by</dt>
-          <dd>{market.profiles?.username || "Unknown"}</dd>
+          <dd>{(market as any).profiles?.username || "Unknown"}</dd>
           <dt className="text-poly-muted">Market Type</dt>
           <dd>{market.market_type === "binary" ? "Binary (Yes/No)" : "Multi-Outcome"}</dd>
           <dt className="text-poly-muted">Total Volume</dt>
