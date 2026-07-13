@@ -2,11 +2,13 @@ export interface Profile {
   id: string;
   email: string;
   username: string;
+  avatar_url?: string;
   points_balance: number;
   total_earned: number;
   total_spent: number;
   markets_created: number;
   bets_placed: number;
+  is_admin: boolean;
   last_weekly_claim: string | null;
   created_at: string;
   updated_at: string;
