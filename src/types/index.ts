@@ -67,6 +67,7 @@ export interface Transaction {
 export interface MarketWithOutcomes extends Market {
   outcomes: Outcome[];
   creator?: Profile;
+  profiles?: { username: string; avatar_url?: string };
   user_bet?: Bet[];
 }
 
